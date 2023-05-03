@@ -78,4 +78,54 @@ public class CustomerServiceTest {
 
     }
 
+    public void testLoginWithValidCredentials() {
+        String email = EMAIL;
+        String password = PASSWORD;
+        Customer customer = new Customer();
+        customer.setEmail(email);
+        customer.setPassword(passwordEncoder.encode(password));
+        Long sessionId = 1L;
+
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.of(customer));
+        when(passwordEncoder.matches(password, customer.getPassword())).thenReturn(true);
+        when(sessionService.createNewSession(customer)).thenReturn(sessionId);
+
+        Long result = customerService.login(email, password);
+
+        assertEquals(sessionId, result);
+        verify(sessionService, times(1)).createNewSession(any());
+
+    }
+    @Test
+    public void testLoginWithInvalidEmail() {
+        String email = EMAIL;
+        String password = PASSWORD;
+
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+
+        Long sessionId = customerService.login(email, password);
+
+        assertNull(sessionId);
+        verify(sessionService, never()).createNewSession(any());
+    }
+
+    @Test
+    public void testLoginWithInvalidPassword() {
+        String email = EMAIL;
+        String password = PASSWORD;
+        Customer customer = new Customer();
+        customer.setEmail(email);
+        customer.setPassword(passwordEncoder.encode("12345"));
+
+        when(customerRepository.findByEmail(email)).thenReturn(Optional.of(customer));
+        when(passwordEncoder.matches(password, customer.getPassword())).thenReturn(false);
+
+        Long sessionId = customerService.login(email, password);
+
+        assertNull(sessionId);
+        verify(sessionService, never()).createNewSession(any());
+
+    }
+
 }
