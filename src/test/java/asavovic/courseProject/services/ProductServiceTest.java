@@ -1,6 +1,7 @@
 package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.Product;
+import asavovic.courseProject.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,7 +26,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    void getAllProductsNoProduct() {
+    void getAllProducts() {
         Product product1 = new Product(1L, "Milk", 8L, 200);
         Product product2 = new Product(2L, "Eggs", 100L, 25);
         List<Product> products = new ArrayList<>(Arrays.asList(product2, product1));
