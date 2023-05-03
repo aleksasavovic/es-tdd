@@ -16,27 +16,30 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+
 public class CustomerServiceTest {
 
     @Mock
     CustomerRepository customerRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+
     @InjectMocks
     CustomerService customerService;
+    private static final String EMAIL = "aleska@gmail.com";
+    private static final String PASSWORD = "password";
+    private static final String ENCRYPTED_PASSWORD = "pa$$word";
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
 
-    private static final String EMAIL = "aleska@gmail.com";
-    private static final String PASSWORD = "password";
-    private static final String ENCRYPTED_PASSWORD = "pa$$word";
-    @Mock
-    private PasswordEncoder passwordEncoder;
+
     @Test
     public void testRegisterWithNewCustomer() {
         Customer newCustomer = new Customer();
@@ -45,12 +48,13 @@ public class CustomerServiceTest {
 
 
         when(customerRepository.findByEmail(EMAIL)).thenReturn(Optional.empty());
-        when(customerRepository.save(any())).thenReturn(newCustomer);
+        when(customerRepository.save(any())).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
         when(passwordEncoder.encode(eq(PASSWORD))).thenReturn(ENCRYPTED_PASSWORD);
 
 
         Customer savedCustomer = customerService.register(newCustomer);
 
+        verify(customerRepository, times(1)).save(any());
 
         assertEquals(EMAIL, savedCustomer.getEmail());
         assertEquals(ENCRYPTED_PASSWORD, savedCustomer.getPassword());
