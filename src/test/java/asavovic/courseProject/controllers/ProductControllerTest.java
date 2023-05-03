@@ -1,7 +1,9 @@
 package asavovic.courseProject.controllers;
 
 import asavovic.courseProject.entities.Customer;
+import asavovic.courseProject.entities.Product;
 import asavovic.courseProject.services.CustomerService;
+import asavovic.courseProject.services.ProductService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +19,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.StatusResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -41,9 +46,11 @@ public class ProductControllerTest {
 
     @Test
     void getAllProductsFromStore() throws Exception {
-        Product product1 = new Product(1L, "Milk", 8, 200);
-        Product product2 = new Product(2L, "Eggs", 100, 25);
-        List<Product> products = Arrays.asList(product1, product2);
+        Product product1 = new Product(1L, "Milk", 8L, 200);
+        Product product2 = new Product(2L, "Eggs", 100L, 25);
+        Set<Product> products = new HashSet<>();
+        products.add(product1);
+        products.add(product2);
 
         when(productService.getAllProducts()).thenReturn(products);
 
@@ -53,11 +60,10 @@ public class ProductControllerTest {
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        List<Product> response = new ObjectMapper().readValue(content, new TypeReference<List<Product>>() {
+        Set<Product> response = new ObjectMapper().readValue(content, new TypeReference<Set<Product>>() {
         });
         assertEquals(2, response.size());
-        assertEquals(product1.getName(), response.get(0).getName());
-        assertEquals(product2.getName(), response.get(1).getName());
+        assertEquals(products, response);
 
 
     }
