@@ -1,5 +1,7 @@
 package asavovic.courseProject.controllers;
 
+import asavovic.courseProject.entities.Customer;
+import asavovic.courseProject.services.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +37,7 @@ public class CustomerControllerTest {
         String password = "123";
         Customer customer = new Customer(email,password);
 
-        when(customerService.registter(customer)).thenReturn(new Customer(email,password));
+        when(customerService.register(customer)).thenReturn(new Customer(email,password));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/register")
                 .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}")
@@ -50,7 +52,7 @@ public class CustomerControllerTest {
         String password = "123";
         Customer customer = new Customer(email,password);
 
-        when(customerService.registter(customer)).thenReturn(null);
+        when(customerService.register(customer)).thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/register")
                         .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}")
