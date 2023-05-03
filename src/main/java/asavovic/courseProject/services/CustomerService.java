@@ -25,4 +25,8 @@ public class CustomerService {
         customerToSave.setPassword(passwordEncoder.encode(newCustomer.getPassword()));
         return customerRepository.save(customerToSave);
     }
+
+    public Long login(String email, String password){
+        return null;
+    }
 }
