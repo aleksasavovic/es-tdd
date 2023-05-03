@@ -27,6 +27,9 @@ public class CustomerServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private SessionService sessionService;
+
 
     @InjectMocks
     CustomerService customerService;
@@ -78,6 +81,7 @@ public class CustomerServiceTest {
 
     }
 
+    @Test
     public void testLoginWithValidCredentials() {
         String email = EMAIL;
         String password = PASSWORD;
@@ -96,6 +100,7 @@ public class CustomerServiceTest {
         verify(sessionService, times(1)).createNewSession(any());
 
     }
+
     @Test
     public void testLoginWithInvalidEmail() {
         String email = EMAIL;
