@@ -105,5 +105,18 @@ public class CartControllerTest {
         verify(cartService, times(1)).removeProductFromCart(1L, 2L);
     }
 
+    @Test
+    public void testUpdateProduct() throws Exception {
+        Long sessionId = 1L;
+        Long productId = 2L;
+        ProductToAdd productDTO = new ProductToAdd();
+        productDTO.setId(productId);
+        mockMvc.perform(MockMvcRequestBuilders.post("/cart/updateProduct")
+                        .header("sessionId", sessionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\": "+productId+" }"))
+                .andExpect(status().isOk());
 
+        verify(cartService, times(1)).updateQuantityOfProductsInCart(productDTO, sessionId);
+    }
 }
