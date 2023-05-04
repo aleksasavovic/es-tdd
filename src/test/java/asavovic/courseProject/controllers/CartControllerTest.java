@@ -2,7 +2,7 @@ package asavovic.courseProject.controllers;
 
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
-import asavovic.courseProject.services.CartService;
+import asavovic.courseProject.services.CartServiceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class CartControllerTest {
     @Mock
-    CartService cartService;
+    CartServiceTest cartService;
 
     @InjectMocks
     CartController cartController;

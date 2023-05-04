@@ -4,11 +4,9 @@ import asavovic.courseProject.entities.Customer;
 import asavovic.courseProject.repositories.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -28,7 +26,7 @@ public class CustomerServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private SessionService sessionService;
+    private SessionServiceTest sessionService;
 
 
     @InjectMocks
