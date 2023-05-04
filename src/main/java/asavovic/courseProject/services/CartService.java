@@ -2,12 +2,17 @@ package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.*;
 import asavovic.courseProject.entities.dto.CartDTO;
+import asavovic.courseProject.entities.dto.ProductDisplay;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
 import asavovic.courseProject.repositories.CartProductRepository;
 import asavovic.courseProject.repositories.CartRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class CartService {
@@ -49,6 +54,19 @@ public class CartService {
     }
 
     public CartDTO showCart(Long sessionId) {
-        return null;
+        Session session = sessionService.getSessionById(sessionId);
+        Cart cart = session.getCart();
+        Set<CartProduct> productsInCart = cart.getProducts();
+        List<ProductDisplay> displays = new ArrayList<>();
+        int index = 0;
+        long totalPrice = 0L;
+        for (CartProduct cartProduct : productsInCart) {
+            long subTotalPrice = cartProduct.getQuantity() * cartProduct.getProduct().getPrice();
+            totalPrice += subTotalPrice;
+            displays.add(new ProductDisplay(index++, cartProduct.getProduct().getName(), cartProduct.getQuantity(), subTotalPrice));
+        }
+
+        return new CartDTO(displays, totalPrice);
+
     }
 }
