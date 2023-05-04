@@ -5,6 +5,7 @@ import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductDisplay;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.CartProductRepository;
 import asavovic.courseProject.repositories.CartRepository;
 import jakarta.transaction.Transactional;
@@ -71,5 +72,19 @@ public class CartService {
     }
 
     public void removeProductFromCart(Long sessionId, Long productId) {
+        Session session = sessionService.getSessionById(sessionId);
+        Cart cart = session.getCart();
+        CartProductId cartProductId = new CartProductId();
+        cartProductId.setProductId(productId);
+        cartProductId.setCartId(cart.getId());
+
+        checkIfProductIsInCart(cartProductId);
+        cartProductRepository.deleteById(cartProductId);
+    }
+
+    private boolean checkIfProductIsInCart(CartProductId cartProductId) {
+        cartProductRepository.findById(cartProductId)
+                .orElseThrow(() -> new ResourceNotFoundException("product with id: " + cartProductId.getProductId() + " not found in the cart"));
+        return true;
     }
 }
