@@ -4,6 +4,7 @@ import asavovic.courseProject.entities.*;
 import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.CartProductRepository;
 import asavovic.courseProject.repositories.CartRepository;
 import asavovic.courseProject.repositories.ProductRepository;
@@ -150,6 +151,57 @@ public class CartServiceTest {
         assertEquals(2500, cartDTO.getTotalPrice());
         assertEquals(cartDTO.getProducts().get(0).getSubTotalPrice(), 500);
         assertEquals(cartDTO.getProducts().get(0).getName(), "Eggs");
+
+
+    }
+
+    @Test
+    void removeProductFromCart() {
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Eggs");
+        product.setPrice(100);
+        product.setQuantity(5L);
+
+        Session session = new Session();
+        session.setSessionId(1L);
+
+        Cart cart = new Cart();
+        cart.setId(1L);
+        cart.setSession(session);
+        session.setCart(cart);
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(cartProductRepository.findById(any())).thenReturn(Optional.of(new CartProduct()));
+
+        cartService.removeProductFromCart(product.getId(), session.getSessionId());
+        verify(cartProductRepository, times(1)).deleteById(any());
+
+
+    }
+
+    @Test
+    void removeProductFromCartProductNotInCart() {
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Eggs");
+        product.setPrice(100);
+        product.setQuantity(5L);
+
+        Session session = new Session();
+        session.setSessionId(1L);
+
+        Cart cart = new Cart();
+        cart.setId(1L);
+        cart.setSession(session);
+        session.setCart(cart);
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(cartProductRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> cartService.removeProductFromCart(product.getId(), session.getSessionId()));
+
+        verify(cartProductRepository, times(0)).deleteById(any());
 
 
     }
