@@ -46,26 +46,24 @@ class SessionServiceTest {
     }
 
     @Test
-    void getUserIdFromSessionId() {
+    void getSessionById() {
         Long sessionId = 1L;
-        Long userId = 1L;
+        Session session = new Session();
+        session.setSessionId(sessionId);
 
-        when(sessionRepository.getUserIdFromSessionId(sessionId)).thenReturn(Optional.of(userId));
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
 
-        Long returnedUserId = sessionService.getUserIdFromSessionId(sessionId);
-
-        assertEquals(returnedUserId, userId);
-        verify(sessionRepository, times(1)).getUserIdFromSessionId(sessionId);
+        assertEquals(session, sessionService.getSessionById(sessionId));
+        verify(sessionRepository, times(1)).findById(sessionId);
     }
 
     @Test
-    void getUserIdFromSessionIdNoSession() {
+    void getSessionByIdNotFound() {
         Long sessionId = 1L;
-        Long userId = 1L;
 
-        when(sessionRepository.getUserIdFromSessionId(sessionId)).thenReturn(Optional.empty());
+        when(sessionRepository.findById(sessionId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> sessionService.getUserIdFromSessionId(sessionId));
-
-        verify(sessionRepository, times(1)).getUserIdFromSessionId(sessionId);
+        assertThrows(ResourceNotFoundException.class, () -> sessionService.getSessionById(sessionId));
+        verify(sessionRepository, times(1)).findById(sessionId);
     }
+}
