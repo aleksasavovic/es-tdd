@@ -1,6 +1,7 @@
 package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.*;
+import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
 import asavovic.courseProject.repositories.CartProductRepository;
@@ -24,7 +25,7 @@ public class CartService {
     }
 
     @Transactional
-    public Void addProductToCart(ProductToAdd productToAdd, Long sessionId){
+    public Void addProductToCart(ProductToAdd productToAdd, Long sessionId) {
         Session session = sessionService.getSessionById(sessionId);
         Product product = productService.getProductById(productToAdd.getId());
 
@@ -44,6 +45,10 @@ public class CartService {
         cart.getProducts().add(cartProduct);
         cartProductRepository.save(cartProduct);
         cartRepository.save(cart);
+        return null;
+    }
+
+    public CartDTO showCart(Long sessionId) {
         return null;
     }
 }

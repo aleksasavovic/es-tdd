@@ -1,13 +1,11 @@
 package asavovic.courseProject.controllers;
 
+import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.services.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CartController {
@@ -18,8 +16,13 @@ public class CartController {
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<Void> addProductToCart(@RequestBody ProductToAdd productToBuy, @RequestHeader Long sessionId ){
-        cartService.addProductToCart(productToBuy,sessionId);
+    public ResponseEntity<Void> addProductToCart(@RequestBody ProductToAdd productToBuy, @RequestHeader Long sessionId) {
+        cartService.addProductToCart(productToBuy, sessionId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/cart")
+    public CartDTO getCart(@RequestHeader Long sessionId) {
+        return cartService.showCart(sessionId);
     }
 }

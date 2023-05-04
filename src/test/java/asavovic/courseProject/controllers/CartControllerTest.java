@@ -1,6 +1,7 @@
 package asavovic.courseProject.controllers;
 
 import asavovic.courseProject.entities.Cart;
+import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
 import asavovic.courseProject.services.CartService;
@@ -80,7 +81,6 @@ public class CartControllerTest {
         Long sessionId = 1L;
         CartDTO cartDTO = new CartDTO();
         when(cartService.showCart(sessionId)).thenReturn(cartDTO);
-
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/cart")
                         .header("sessionId", sessionId))
                 .andReturn();
@@ -88,8 +88,8 @@ public class CartControllerTest {
         ObjectMapper mapper = new ObjectMapper();
         CartDTO cartResult = mapper.readValue(responseBody, CartDTO.class);
 
-        Assertions.assertEquals(cartDTO.getTotalPrice, cartResult.getTotalPrice);
-        Assertions.assertIterableEquals(cartDTO.getProductDisplay, cartResult.ProductDisplay);
+        Assertions.assertEquals(cartDTO.getTotalPrice(), cartResult.getTotalPrice());
+        Assertions.assertIterableEquals(cartDTO.getProducts(), cartResult.getProducts());
 
     }
 
