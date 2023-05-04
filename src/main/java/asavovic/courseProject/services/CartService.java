@@ -87,4 +87,7 @@ public class CartService {
                 .orElseThrow(() -> new ResourceNotFoundException("product with id: " + cartProductId.getProductId() + " not found in the cart"));
         return true;
     }
+
+    public void updateQuantityOfProductsInCart(ProductToAdd productDTO, Long sessionId) {
+    }
 }

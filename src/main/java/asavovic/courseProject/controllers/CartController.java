@@ -30,4 +30,9 @@ public class CartController {
     public void removeProduct(@RequestBody ProductToAdd productDTO, @RequestHeader Long sessionId) {
         cartService.removeProductFromCart(sessionId, productDTO.getId());
     }
+
+    @PostMapping("/cart/updateProduct")
+    public void updateProduct(@RequestBody ProductToAdd productDTO, @RequestHeader Long sessionId) {
+        cartService.updateQuantityOfProductsInCart(productDTO, sessionId);
+    }
 }
