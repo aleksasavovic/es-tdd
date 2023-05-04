@@ -1,6 +1,7 @@
 package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.*;
+import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
 import asavovic.courseProject.repositories.CartProductRepository;
@@ -12,8 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -125,6 +128,29 @@ public class CartServiceTest {
 
         verify(cartProductRepository, never()).save(any());
         verify(cartRepository, never()).save(any());
+
+    }
+
+    @Test
+    void showCart() {
+        Long sessionId = 1L;
+        Cart cart = new Cart();
+        Product product1 = new Product(1L, "Eggs", 10L, 100, new HashSet<>());
+        Product product2 = new Product(2L, "Milk", 5L, 200, new HashSet<>());
+        CartProduct cartProduct1 = new CartProduct(new CartProductId(1L, 1L), cart, product1, 5L);
+        CartProduct cartProduct2 = new CartProduct(new CartProductId(1L, 2L), cart, product2, 10L);
+        Set<CartProduct> productsInCart = new HashSet<>(Arrays.asList(cartProduct1, cartProduct2));
+        cart.setProducts(productsInCart);
+
+        when(sessionService.getSessionById(sessionId)).thenReturn(new Session(1L, new Customer(), cart));
+
+        CartDTO cartDTO = cartService.showCart(sessionId);
+
+        assertEquals(2, cartDTO.getProducts().size());
+        assertEquals(2500, cartDTO.getTotalPrice());
+        assertEquals(cartDTO.getProducts().get(0).getSubTotalPrice(), 500);
+        assertEquals(cartDTO.getProducts().get(0).getName(), "Eggs");
+
 
     }
 
