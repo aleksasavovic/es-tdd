@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -91,6 +92,17 @@ public class CartControllerTest {
         Assertions.assertEquals(cartDTO.getTotalPrice(), cartResult.getTotalPrice());
         Assertions.assertIterableEquals(cartDTO.getProducts(), cartResult.getProducts());
 
+    }
+
+    @Test
+    void removeProductFromCart() throws Exception {
+        mockMvc.perform(post("/cart/removeProduct")
+                        .header("sessionId", "1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\": 2}"))
+                .andExpect(status().isOk());
+
+        verify(cartService, times(1)).removeProductFromCart(1L, 2L);
     }
 
 
