@@ -46,8 +46,8 @@ public class ProductControllerTest {
 
     @Test
     void getAllProductsFromStore() throws Exception {
-        Product product1 = new Product(1L, "Milk", 8L, 200);
-        Product product2 = new Product(2L, "Eggs", 100L, 25);
+        Product product1 = new Product(1L, "Milk", 8L, 200,new HashSet<>());
+        Product product2 = new Product(2L, "Eggs", 100L, 25, new HashSet<>());
         Set<Product> products = new HashSet<>();
         products.add(product1);
         products.add(product2);

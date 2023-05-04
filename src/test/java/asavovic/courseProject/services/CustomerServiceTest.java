@@ -26,7 +26,7 @@ public class CustomerServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private SessionServiceTest sessionService;
+    private SessionService sessionService;
 
 
     @InjectMocks

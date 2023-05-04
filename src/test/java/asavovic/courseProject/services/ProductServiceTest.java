@@ -27,8 +27,8 @@ public class ProductServiceTest {
 
     @Test
     void getAllProducts() {
-        Product product1 = new Product(1L, "Milk", 8L, 200);
-        Product product2 = new Product(2L, "Eggs", 100L, 25);
+        Product product1 = new Product(1L, "Milk", 8L, 200,new HashSet<>());
+        Product product2 = new Product(2L, "Eggs", 100L, 25, new HashSet<>());
         List<Product> products = new ArrayList<>(Arrays.asList(product2, product1));
 
         when(productRepository.findAll()).thenReturn(products);

@@ -1,10 +1,10 @@
 package asavovic.courseProject.services;
 
-import asavovic.courseProject.entities.Customer;
-import asavovic.courseProject.entities.Product;
-import asavovic.courseProject.entities.Session;
+import asavovic.courseProject.entities.*;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.repositories.CartProductRepository;
+import asavovic.courseProject.repositories.CartRepository;
 import asavovic.courseProject.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,9 @@ public class CartServiceTest {
     CartRepository cartRepository;
 
     @Mock
-    SessionServiceTest sessionService;
+    SessionService sessionService;
+    @Mock
+    CartProductRepository cartProductRepository;
 
     @Mock
     ProductService productService;
@@ -111,7 +113,7 @@ public class CartServiceTest {
         Session session = new Session(sessionId, new Customer(), cart);
         ProductToAdd productToAdd = new ProductToAdd();
         productToAdd.setId(productId);
-        productToAdd.setQuantity(12L);
+        productToAdd.setAmountToAdd(12L);
 
         when(sessionService.getSessionById(any())).thenReturn(session);
         when(productService.getProductById(any())).thenReturn(product1);
@@ -125,5 +127,6 @@ public class CartServiceTest {
         verify(cartRepository, never()).save(any());
 
     }
+
 
 }

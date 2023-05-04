@@ -1,10 +1,11 @@
 package asavovic.courseProject.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -19,4 +20,7 @@ public class Product {
     private Long quantity;
 
     private int price;
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private Set<CartProduct> carts = new HashSet<>();
 }

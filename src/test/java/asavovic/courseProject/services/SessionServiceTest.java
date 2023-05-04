@@ -2,6 +2,7 @@ package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.Customer;
 import asavovic.courseProject.entities.Session;
+import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.SessionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

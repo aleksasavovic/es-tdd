@@ -1,6 +1,7 @@
 package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.Product;
+import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,9 @@ public class ProductService {
         Set<Product> products = new HashSet<>();
         productRepository.findAll().iterator().forEachRemaining(products::add);
         return products;
+    }
+
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("no such product"));
     }
 }
