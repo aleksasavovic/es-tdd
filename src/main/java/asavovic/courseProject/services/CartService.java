@@ -69,4 +69,7 @@ public class CartService {
         return new CartDTO(displays, totalPrice);
 
     }
+
+    public void removeProductFromCart(Long sessionId, Long productId) {
+    }
 }

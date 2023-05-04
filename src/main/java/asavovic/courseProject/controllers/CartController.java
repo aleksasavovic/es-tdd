@@ -25,4 +25,9 @@ public class CartController {
     public CartDTO getCart(@RequestHeader Long sessionId) {
         return cartService.showCart(sessionId);
     }
+
+    @PostMapping("/cart/removeProduct")
+    public void removeProduct(@RequestBody ProductToAdd productDTO, @RequestHeader Long sessionId) {
+        cartService.removeProductFromCart(sessionId, productDTO.getId());
+    }
 }
