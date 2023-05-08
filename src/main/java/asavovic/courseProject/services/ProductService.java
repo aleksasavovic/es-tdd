@@ -1,5 +1,6 @@
 package asavovic.courseProject.services;
 
+import asavovic.courseProject.entities.CartProduct;
 import asavovic.courseProject.entities.Product;
 import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.ProductRepository;
@@ -25,5 +26,10 @@ public class ProductService {
 
     public Product getProductById(Long productId) {
         return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("no such product"));
+    }
+    public void updateAvailableQuantities(Set<CartProduct> productsInCart, int sign) {
+        for (CartProduct cartProduct : productsInCart) {
+            productRepository.updateAmountById(sign * cartProduct.getQuantity(), cartProduct.getProduct().getId());
+        }
     }
 }
