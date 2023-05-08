@@ -31,4 +31,18 @@ public class ProductRepositoryTest {
         assertNotNull(updatedProduct);
         assertEquals(Long.valueOf(7L), updatedProduct.getQuantity());
     }
+    @Test
+    @Transactional
+    public void testFindQuantityById() {
+        Product product = new Product();
+        product.setId(1L);
+        product.setQuantity(10L);
+
+        productRepository.save(product);
+
+        Long quantity = productRepository.findQuantityById(1L).orElse(null);
+
+        assertNotNull(quantity);
+        assertEquals(Long.valueOf(10L), quantity);
+    }
 }
