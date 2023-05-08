@@ -88,6 +88,27 @@ public class CartService {
         return true;
     }
 
-    public void updateQuantityOfProductsInCart(ProductToAdd productDTO, Long sessionId) {
+    @Transactional
+    public boolean updateQuantityOfProductsInCart(ProductToAdd productDTO, Long sessionId) {
+        Session session = sessionService.getSessionById(sessionId);
+
+        Cart cart = session.getCart();
+
+        CartProductId cartProductId = new CartProductId();
+        cartProductId.setProductId(productDTO.getId());
+        cartProductId.setCartId(cart.getId());
+
+        Product product = productService.getProductById(productDTO.getId());
+
+        CartProduct cartProduct = cartProductRepository.findById(cartProductId)
+                .orElseThrow(() -> new ResourceNotFoundException("you don't have product with id :" + productDTO.getId()));
+
+
+        if (productDTO.getAmountToAdd() > product.getQuantity())
+            throw new DeficientResourcesException("not enough items with id : " + productDTO.getId());
+
+        cartProduct.setQuantity(productDTO.getAmountToAdd());
+        cartProductRepository.save(cartProduct);
+        return true;
     }
 }
