@@ -206,5 +206,110 @@ public class CartServiceTest {
 
     }
 
+    @Test
+    void updateQuantityOfProductsInCart() {
+        Long sessionId = 1L;
+        Session session = new Session();
+        session.setSessionId(sessionId);
+        Product product = new Product();
+        product.setId(1L);
+        product.setQuantity(10L);
 
+        Cart cart = new Cart();
+        cart.setId(1L);
+
+        CartProductId cartProductId = new CartProductId(cart.getId(), product.getId());
+
+        CartProduct cartProduct = new CartProduct();
+        cartProduct.setCartProductId(cartProductId);
+        cartProduct.setCart(cart);
+        cartProduct.setProduct(product);
+        cartProduct.setQuantity(3L);
+
+        CartProduct expectedCartProduct = new CartProduct();
+        expectedCartProduct.setCartProductId(cartProductId);
+        expectedCartProduct.setCart(cart);
+        expectedCartProduct.setProduct(product);
+        expectedCartProduct.setQuantity(5L);
+
+        ProductToAdd productDTO = new ProductToAdd();
+        productDTO.setId(product.getId());
+        productDTO.setAmountToAdd(5L);
+
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(productService.getProductById(any())).thenReturn(product);
+        when(cartProductRepository.findById(any())).thenReturn(Optional.of(cartProduct));
+
+        cartService.updateQuantityOfProductsInCart(productDTO, sessionId);
+
+        assertEquals(cartProduct.getQuantity(), expectedCartProduct.getQuantity());
+
+
+    }
+
+    @Test
+    void updateQuantityOfProductsInCartProductNotAlreadyInACart() {
+        Long sessionId = 1L;
+        Session session = new Session();
+        session.setSessionId(sessionId);
+        Product product = new Product();
+        product.setId(1L);
+        product.setQuantity(10L);
+
+        Cart cart = new Cart();
+        cart.setId(1L);
+
+
+        ProductToAdd productDTO = new ProductToAdd();
+        productDTO.setId(product.getId());
+        productDTO.setAmountToAdd(5L);
+
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(productService.getProductById(any())).thenReturn(product);
+        when(cartProductRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> cartService.updateQuantityOfProductsInCart(productDTO, sessionId));
+    }
+
+    @Test
+    void updateQuantityOfProductsInCartNotEnoguhProductsInStore() {
+        Long sessionId = 1L;
+        Session session = new Session();
+        session.setSessionId(sessionId);
+        Product product = new Product();
+        product.setId(1L);
+        product.setQuantity(10L);
+
+        Cart cart = new Cart();
+        cart.setId(1L);
+
+        CartProductId cartProductId = new CartProductId(cart.getId(), product.getId());
+
+        CartProduct cartProduct = new CartProduct();
+        cartProduct.setCartProductId(cartProductId);
+        cartProduct.setCart(cart);
+        cartProduct.setProduct(product);
+        cartProduct.setQuantity(3L);
+
+        CartProduct expectedCartProduct = new CartProduct();
+        expectedCartProduct.setCartProductId(cartProductId);
+        expectedCartProduct.setCart(cart);
+        expectedCartProduct.setProduct(product);
+        expectedCartProduct.setQuantity(5L);
+
+        ProductToAdd productDTO = new ProductToAdd();
+        productDTO.setId(product.getId());
+        productDTO.setAmountToAdd(12L);
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(productService.getProductById(any())).thenReturn(product);
+        when(cartProductRepository.findById(any())).thenReturn(Optional.of(cartProduct));
+
+
+        assertThrows(DeficientResourcesException.class, () -> cartService.updateQuantityOfProductsInCart(productDTO, sessionId));
+
+
+    }
 }
