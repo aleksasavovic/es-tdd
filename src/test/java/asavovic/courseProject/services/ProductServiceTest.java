@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class ProductServiceTest {
@@ -28,7 +29,7 @@ public class ProductServiceTest {
 
     @Test
     void getAllProducts() {
-        Product product1 = new Product(1L, "Milk", 8L, 200,new HashSet<>());
+        Product product1 = new Product(1L, "Milk", 8L, 200, new HashSet<>());
         Product product2 = new Product(2L, "Eggs", 100L, 25, new HashSet<>());
         List<Product> products = new ArrayList<>(Arrays.asList(product2, product1));
 
@@ -75,10 +76,33 @@ public class ProductServiceTest {
         productsInCart.add(cartProduct1);
         productsInCart.add(cartProduct2);
 
-        productService.updateAvailableQuantities(productsInCart,1);
+        productService.updateAvailableQuantities(productsInCart, 1);
 
-        verify(productRepository,times(2)).updateAmountById(any(),any());
+        verify(productRepository, times(2)).updateAmountById(any(), any());
     }
 
+    @Test
+    void testGetAvailableQuantity() {
+        Product product1 = new Product();
+        product1.setId(1L);
+        product1.setQuantity(10L);
 
+        when(productRepository.findQuantityById(1L)).thenReturn(Optional.of(10L));
+
+        Long quantity = productService.getAvailableQuantity(1L);
+
+        assertEquals(quantity,10L);
+    }
+
+    @Test
+    void testGetAvailableQuantityNoProductFound() {
+        Product product1 = new Product();
+        product1.setId(1L);
+        product1.setQuantity(10L);
+
+        when(productRepository.findQuantityById(2L)).thenThrow(ServerErrorException.class);
+
+       assertThrows(ServerErrorException.class, ()->productService.getAvailableQuantity(2L));
+
+    }
 }
