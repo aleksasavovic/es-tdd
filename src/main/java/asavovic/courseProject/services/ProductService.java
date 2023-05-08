@@ -3,6 +3,7 @@ package asavovic.courseProject.services;
 import asavovic.courseProject.entities.CartProduct;
 import asavovic.courseProject.entities.Product;
 import asavovic.courseProject.exceptions.ResourceNotFoundException;
+import asavovic.courseProject.exceptions.ServerErrorException;
 import asavovic.courseProject.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,9 @@ public class ProductService {
         for (CartProduct cartProduct : productsInCart) {
             productRepository.updateAmountById(sign * cartProduct.getQuantity(), cartProduct.getProduct().getId());
         }
+    }
+
+    public Long getAvailableQuantity(Long productId) {
+        return productRepository.findQuantityById(productId).orElseThrow(()-> new ServerErrorException("server error"));
     }
 }

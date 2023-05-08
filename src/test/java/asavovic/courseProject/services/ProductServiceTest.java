@@ -2,6 +2,7 @@ package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.CartProduct;
 import asavovic.courseProject.entities.Product;
+import asavovic.courseProject.exceptions.ServerErrorException;
 import asavovic.courseProject.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
