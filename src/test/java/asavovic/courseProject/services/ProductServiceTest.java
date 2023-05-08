@@ -1,5 +1,6 @@
 package asavovic.courseProject.services;
 
+import asavovic.courseProject.entities.CartProduct;
 import asavovic.courseProject.entities.Product;
 import asavovic.courseProject.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +58,27 @@ public class ProductServiceTest {
         verify(productRepository, times(1)).findAll();
     }
 
+    @Test
+    void updateAvailableQuantities() {
+        CartProduct cartProduct1 = new CartProduct();
+        CartProduct cartProduct2 = new CartProduct();
+        Product product1 = new Product();
+        product1.setId(1L);
+        Product product2 = new Product();
+        product2.setId(2L);
+        cartProduct1.setProduct(product1);
+        cartProduct2.setProduct(product2);
+        cartProduct2.setQuantity(10L);
+        cartProduct1.setQuantity(15L);
+
+        Set<CartProduct> productsInCart = new HashSet<>();
+        productsInCart.add(cartProduct1);
+        productsInCart.add(cartProduct2);
+
+        productService.updateAvailableQuantities(productsInCart,1);
+
+        verify(productRepository,times(2)).updateAmountById(any(),any());
+    }
 
 
 }
