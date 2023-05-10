@@ -2,6 +2,8 @@ package asavovic.courseProject.services;
 
 import asavovic.courseProject.entities.CartProduct;
 import asavovic.courseProject.entities.Product;
+import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.exceptions.PriceChangedException;
 import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.exceptions.ServerErrorException;
 import asavovic.courseProject.repositories.ProductRepository;
@@ -28,6 +30,7 @@ public class ProductService {
     public Product getProductById(Long productId) {
         return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException("no such product"));
     }
+
     public void updateAvailableQuantities(Set<CartProduct> productsInCart, int sign) {
         for (CartProduct cartProduct : productsInCart) {
             productRepository.updateAmountById(sign * cartProduct.getQuantity(), cartProduct.getProduct().getId());
@@ -35,6 +38,15 @@ public class ProductService {
     }
 
     public Long getAvailableQuantity(Long productId) {
-        return productRepository.findQuantityById(productId).orElseThrow(()-> new ServerErrorException("server error"));
+        return productRepository.findQuantityById(productId).orElseThrow(() -> new ServerErrorException("server error"));
+    }
+
+    public boolean checkAvailableQuantityAndPrice(Long id, Long quantity, int price) {
+        Product product = getProductById(id);
+        if (product.getQuantity() < quantity)
+            throw new DeficientResourcesException("not enoguh quantity");
+        if (product.getPrice() != price)
+            throw new PriceChangedException("price has changed for product with id: " + id + " ");
+        return true;
     }
 }

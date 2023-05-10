@@ -3,6 +3,7 @@ package asavovic.courseProject.services;
 import asavovic.courseProject.entities.CartProduct;
 import asavovic.courseProject.entities.Product;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.exceptions.PriceChangedException;
 import asavovic.courseProject.exceptions.ServerErrorException;
 import asavovic.courseProject.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,7 +119,7 @@ public class ProductServiceTest {
         int priceOfProductInCart = 110;
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        boolean result = productService.checkAvailableQuantityAndPrice(requestedQuantity, priceOfProductInCart);
+        boolean result = productService.checkAvailableQuantityAndPrice(1L, requestedQuantity, priceOfProductInCart);
 
         assertTrue(result);
     }
@@ -134,7 +135,7 @@ public class ProductServiceTest {
         int priceOfProductInCart = 110;
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(DeficientResourcesException.class, () -> productService.checkAvailableQuantityAndPrice(requestedQuantity, priceOfProductInCart));
+        assertThrows(DeficientResourcesException.class, () -> productService.checkAvailableQuantityAndPrice(1L, requestedQuantity, priceOfProductInCart));
     }
 
     @Test
@@ -148,6 +149,6 @@ public class ProductServiceTest {
         int priceOfProductInCart = 150;
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(PriceChangedException.class, () -> productService.checkAvailableQuantityAndPrice(requestedQuantity, priceOfProductInCart));
+        assertThrows(PriceChangedException.class, () -> productService.checkAvailableQuantityAndPrice(1l, requestedQuantity, priceOfProductInCart));
     }
 }
