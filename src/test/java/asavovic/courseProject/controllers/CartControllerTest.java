@@ -119,4 +119,14 @@ public class CartControllerTest {
 
         verify(cartService, times(1)).updateQuantityOfProductsInCart(productDTO, sessionId);
     }
+
+    @Test
+    void testCheckout() throws Exception {
+        mockMvc.perform(post("/cart/checkout")
+                        .header("sessionId", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(cartService, times(1)).checkout(1L);
+    }
 }
