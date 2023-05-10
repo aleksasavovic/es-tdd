@@ -4,6 +4,7 @@ import asavovic.courseProject.entities.*;
 import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.exceptions.EmptyCartException;
 import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.CartProductRepository;
 import asavovic.courseProject.repositories.CartRepository;
@@ -357,11 +358,11 @@ public class CartServiceTest {
 
 
         when(sessionService.getSessionById(any())).thenReturn(session);
-        when(productService.checkAvailableQuantityAndPrice(any(),anyLong(),any())).thenReturn(true);
+        when(productService.checkAvailableQuantityAndPrice(anyLong(),anyLong(),anyInt())).thenReturn(true);
 
         cartService.checkout(sessionId);
 
-        verify(productService, times(2)).checkAvailableQuantityAndPrice(anyLong(),anyLong(),any());
+        verify(productService, times(2)).checkAvailableQuantityAndPrice(anyLong(),anyLong(),anyInt());
 
 
     }
@@ -385,7 +386,7 @@ public class CartServiceTest {
 
 
         when(sessionService.getSessionById(any())).thenReturn(session);
-        when(productService.checkAvailableQuantityAndPrice(any(),anyLong(),any())).thenReturn(true);
+        when(productService.checkAvailableQuantityAndPrice(any(),anyLong(),anyInt())).thenReturn(true);
 
         assertThrows(EmptyCartException.class, () -> cartService.checkout(sessionId));
     }

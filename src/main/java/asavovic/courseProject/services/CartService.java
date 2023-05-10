@@ -5,6 +5,7 @@ import asavovic.courseProject.entities.dto.CartDTO;
 import asavovic.courseProject.entities.dto.ProductDisplay;
 import asavovic.courseProject.entities.dto.ProductToAdd;
 import asavovic.courseProject.exceptions.DeficientResourcesException;
+import asavovic.courseProject.exceptions.EmptyCartException;
 import asavovic.courseProject.exceptions.ResourceNotFoundException;
 import asavovic.courseProject.repositories.CartProductRepository;
 import asavovic.courseProject.repositories.CartRepository;
@@ -110,5 +111,28 @@ public class CartService {
         cartProduct.setQuantity(productDTO.getAmountToAdd());
         cartProductRepository.save(cartProduct);
         return true;
+    }
+
+    @Transactional
+    public void checkout(Long sessionId) {
+        Session session = sessionService.getSessionById(sessionId);
+        Customer customer = session.getCustomer();
+        Cart cart = session.getCart();
+
+        if (cart.getProducts().size() == 0)
+            throw new EmptyCartException("ur cart is empty");
+
+        checkAvailabilityAndPrice(cart.getProducts());
+
+        productService.updateAvailableQuantities(cart.getProducts(), 1);
+
+        cart.setSession(null);
+        session.setCart(new Cart());
+    }
+
+    private void checkAvailabilityAndPrice(Set<CartProduct> products) {
+        for (CartProduct product : products) {
+            productService.checkAvailableQuantityAndPrice(product.getProduct().getId(), product.getQuantity(), product.getProduct().getPrice());
+        }
     }
 }
