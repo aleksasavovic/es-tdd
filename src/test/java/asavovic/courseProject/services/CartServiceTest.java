@@ -312,4 +312,81 @@ public class CartServiceTest {
 
 
     }
+
+    @Test
+    void checkout() {
+        Long sessionId = 1L;
+        Session session = new Session();
+        session.setSessionId(sessionId);
+
+        Cart cart = new Cart();
+        Set<CartProduct> products = new HashSet<>();
+
+        Product product1 = new Product();
+        product1.setId(1L);
+        product1.setName("Eggs");
+        product1.setQuantity(10L);
+        product1.setPrice(100);
+
+        Product product2 = new Product();
+        product2.setId(2L);
+        product2.setName("Milk");
+        product2.setQuantity(5L);
+        product2.setPrice(50);
+
+        CartProductId cartProductId1 = new CartProductId();
+        cartProductId1.setCartId(cart.getId());
+        cartProductId1.setProductId(product1.getId());
+        CartProduct cartProduct1 = new CartProduct(cartProductId1, cart, product1, 3L);
+
+        CartProductId cartProductId2 = new CartProductId();
+        cartProductId2.setCartId(cart.getId());
+        cartProductId2.setProductId(product2.getId());
+        CartProduct cartProduct2 = new CartProduct(cartProductId2, cart, product2, 2L);
+
+        products.add(cartProduct1);
+        products.add(cartProduct2);
+
+        cart.setProducts(products);
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+
+        session.setCart(cart);
+        session.setCustomer(customer);
+
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(productService.checkAvailableQuantityAndPrice(any(),anyLong(),any())).thenReturn(true);
+
+        cartService.checkout(sessionId);
+
+        verify(productService, times(2)).checkAvailableQuantityAndPrice(anyLong(),anyLong(),any());
+
+
+    }
+
+    @Test
+    void checkoutEmptyCart() {
+        Long sessionId = 1L;
+        Session session = new Session();
+        session.setSessionId(sessionId);
+
+        Cart cart = new Cart();
+        Set<CartProduct> products = new HashSet<>();
+
+        cart.setProducts(products);
+
+        Customer customer = new Customer();
+        customer.setId(1L);
+
+        session.setCart(cart);
+        session.setCustomer(customer);
+
+
+        when(sessionService.getSessionById(any())).thenReturn(session);
+        when(productService.checkAvailableQuantityAndPrice(any(),anyLong(),any())).thenReturn(true);
+
+        assertThrows(EmptyCartException.class, () -> cartService.checkout(sessionId));
+    }
 }
