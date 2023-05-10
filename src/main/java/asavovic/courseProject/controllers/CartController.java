@@ -35,4 +35,9 @@ public class CartController {
     public void updateProduct(@RequestBody ProductToAdd productDTO, @RequestHeader Long sessionId) {
         cartService.updateQuantityOfProductsInCart(productDTO, sessionId);
     }
+
+    @PostMapping("/cart/checkout")
+    public void checkout(@RequestHeader Long sessionId) {
+        cartService.checkout(sessionId);
+    }
 }
